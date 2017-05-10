@@ -1,0 +1,23 @@
+node ('master'){
+  stage 'Pull'
+  if (env.BRANCH_NAME.startsWith('PR-')) {
+    checkout scm
+  } else {
+    checkout([
+        $class: 'GitSCM',
+        branches: [[name: "*/${env.BRANCH_NAME}"]],
+        userRemoteConfigs: [[url: 'https://github.com/philips-emr/tasy-web-suite-backend.git', credentialsId: '42914c7f-7f6d-4476-b83f-fe27f12b45d6']],
+        extensions: [[$class: 'LocalBranch', localBranch: "${env.BRANCH_NAME}"]]],
+      )
+  }
+
+  stage 'Build'
+  String gradle = tool 'Gradle 2.14'
+  if ("${env.BRANCH_NAME}" == 'master') {
+    sh "${gradle}/bin/gradle clean release -Dorg.ajoberstar.grgit.auth.username=${env.GH_TOKEN} -Dorg.ajoberstar.grgit.auth.password --no-daemon --info --stacktrace"
+  } else if (env.BRANCH_NAME.startsWith('PR-')) {
+    sh "${gradle}/bin/gradle clean assemble check --no-daemon --stacktrace"
+  } else {
+    sh "${gradle}/bin/gradle clean assemble check publish --no-daemon --stacktrace"
+  }
+}

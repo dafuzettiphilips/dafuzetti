@@ -1,0 +1,21 @@
+buildscript { scriptHandler ->
+    apply from: "$rootDir/gradle/repositories.gradle", to: scriptHandler
+    scriptHandler.dependencies {
+        // release
+        classpath 'org.apache.bval:bval-jsr303:0.4'
+        classpath 'de.gliderpilot.gradle.semantic-release:gradle-semantic-release-plugin:1.2.0'
+    }
+}
+
+apply plugin : de.gliderpilot.gradle.semanticrelease.SemanticReleasePlugin
+
+semanticRelease {
+    changeLog {
+        ghToken = project.hasProperty("ghToken") ? project.property("ghToken") : ""
+    }
+}
+
+tasks.release {
+    dependsOn subprojects.build
+    finalizedBy subprojects.publish
+}

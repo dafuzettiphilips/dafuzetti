@@ -1,0 +1,16 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+eclipse {
+    classpath {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

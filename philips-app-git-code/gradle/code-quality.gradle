@@ -1,0 +1,73 @@
+buildscript { scriptHandler ->
+    apply from: "$rootDir/gradle/repositories.gradle", to: scriptHandler
+    scriptHandler.dependencies {
+        classpath 'ru.vyarus:gradle-quality-plugin:1.3.0'
+    }
+}
+
+apply plugin: 'jdepend'
+apply plugin: ru.vyarus.gradle.plugin.quality.QualityPlugin
+
+jdepend {
+    toolVersion = '2.9.1'
+    sourceSets = [sourceSets.main]
+    ignoreFailures = true
+    reportsDir = file("$project.buildDir/reports/jdepend")
+}
+
+
+quality {
+
+    // Tools versions
+
+    checkstyleVersion = '6.17'
+    pmdVersion = '5.4.1'
+    findbugsVersion = '3.0.1'
+    codenarcVersion = '0.25.1'
+    animalsnifferVersion
+
+    // Enable/disable tools
+
+    checkstyle = true
+    pmd = true
+    findbugs = true
+    codenarc = true
+
+    /**
+     * The analysis effort level. The value specified should be one of min, default, or max.
+     * Higher levels increase precision and find more bugs at the expense of running time and
+     * memory consumption. Default is 'max'.
+     */
+    findbugsEffort = 'max'
+
+    /**
+     * The priority threshold for reporting bugs. If set to low, all bugs are reported.
+     * If set to medium, medium and high priority bugs are reported.
+     * If set to high, only high priority bugs are reported. Default is 'medium'.
+     */
+    findbugsLevel = 'medium'
+
+    /**
+     * Javac lint options to show compiler warnings, not visible by default.
+     * Options will be added as -Xlint:option
+     * Full list of options: http://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html#BHCJCABJ
+     */
+    lintOptions = ['deprecation', 'unchecked']
+
+    /**
+     * Strict quality leads to build fail on any violation found. If disabled, all violation
+     * are just printed to console.
+     */
+    strict = true
+
+    /**
+     * Source sets to apply checks on.
+     * Default is [sourceSets.main] to apply only for project sources, excluding tests.
+     */
+    //sourceSets = [sourceSets.main]
+
+    /**
+     * User configuration files directory. Files in this directory will be used instead of default (bundled) configs.
+     */
+    configDir = "$rootDir/gradle/config/quality"
+}

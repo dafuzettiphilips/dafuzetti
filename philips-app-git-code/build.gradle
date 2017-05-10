@@ -1,0 +1,68 @@
+
+apply from: "${rootDir}/gradle/compile.gradle"
+apply from: "${rootDir}/gradle/maven.gradle"
+apply from: "${rootDir}/gradle/libraries.gradle"
+apply from: "${rootDir}/gradle/repositories.gradle"
+apply from: "${rootDir}/gradle/ide.gradle"
+apply from: "${rootDir}/gradle/code-quality.gradle"
+apply from: "${rootDir}/gradle/release.gradle"
+
+group 'api.code.start'
+
+apply plugin: 'war'
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.7.7.201606060606"
+}
+
+war{
+    archiveName 'philips-app-git-code.war'
+    webAppDirName = 'src/main/webapp'
+}
+
+test {
+    useJUnit()
+}
+
+configurations {
+    all*.exclude group: 'javax.ws.rs', module: 'jsr311-api'
+}
+
+dependencies {
+
+    compile ( philips.boot ) {
+        exclude group: 'com.sun.jersey'
+        exclude group: 'javax.inject'
+    }
+    compile ( philips.commons )
+    compile ( philips.data )
+    compile ( philips.resteasy.core )
+    compile ( philips.security )
+
+    compile ( logs.simple )
+    compile ( data.oracle.ucp )
+    compile ( data.oracle.ojdbc )
+
+    compile ( google.guice.thorwingproviders )
+
+    compile ( swagger.core )
+    compile ( swagger.jaxrs )
+    compile ( swagger.annotations )
+    compile group: 'org.jboss.resteasy', name: 'tjws', version: '2.3.4.Final'
+    compile ( api.commons )
+
+    // security
+    //compile "org.jboss.resteasy:resteasy-oauth:${resteasyVersion}"
+
+    //testCompile ( test.testng )
+    //testCompile ( governator.test )
+    //testCompile ( philips.test )
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.+'
+    testCompile 'io.rest-assured:rest-assured:3.0.1'
+    testCompile 'io.rest-assured:json-path:3.0.1'
+
+}
+
+
