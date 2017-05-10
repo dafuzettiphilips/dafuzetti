@@ -1,0 +1,11 @@
+---
+module: "com.philips.websuite.infrastructure.GuiceModule"
+context: "philips-app-git-code"
+port: 8084
+sources:
+- name: "TASY"
+  driverClass: "oracle.jdbc.driver.OracleDriver"
+  jdbcUrl:  "jdbc:oracle:thin:@192.168.0.230:1521:phdev"
+  username: "tasy"
+  password: "aloisk"
+  sqlTest: "select 1 from dual"
